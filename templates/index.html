@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thyroid Cancer Recurrence Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='image.jpg') }}" alt="Thyroid Icon">
+    <h1>Thyroid Cancer Recurrence Prediction</h1>
+    <form method="POST" action="/predict">
+      
+      <label for="Age">Age:</label>
+      <input type="text" name="Age" required>
+
+      <label for="Gender">Gender:</label>
+      <select name="Gender" required>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+
+      <label for="Smoking">Smoking:</label>
+      <select name="Smoking" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="Hx Smoking">Hx Smoking:</label>
+      <select name="Hx Smoking" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="Hx Radiothreapy">Hx Radiothreapy:</label>
+      <select name="Hx Radiothreapy" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="Thyroid Function">Thyroid Function:</label>
+      <select name="Thyroid Function" required>
+        <option value="normal">Normal</option>
+        <option value="hyper">Hyper</option>
+        <option value="hypo">Hypo</option>
+      </select>
+
+      <label for="Physical Examination">Physical Examination:</label>
+      <select name="Physical Examination" required>
+        <option value="normal">Normal</option>
+        <option value="abnormal">Abnormal</option>
+      </select>
+
+      <label for="Adenopathy">Adenopathy:</label>
+      <select name="Adenopathy" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="Pathology">Pathology:</label>
+      <select name="Pathology" required>
+        <option value="benign">Benign</option>
+        <option value="malignant">Malignant</option>
+      </select>
+
+      <label for="Focality">Focality:</label>
+      <select name="Focality" required>
+        <option value="unifocal">Unifocal</option>
+        <option value="multifocal">Multifocal</option>
+      </select>
+
+      <label for="Risk">Risk:</label>
+      <select name="Risk" required>
+        <option value="low">Low</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="high">High</option>
+      </select>
+
+      <label for="T">T:</label>
+      <select name="T" required>
+        <option value="t0">T0</option>
+        <option value="t1">T1</option>
+        <option value="t2">T2</option>
+        <option value="t3">T3</option>
+        <option value="t4">T4</option>
+      </select>
+
+      <label for="N">N:</label>
+      <select name="N" required>
+        <option value="n0">N0</option>
+        <option value="n1">N1</option>
+        <option value="n2">N2</option>
+        <option value="n3">N3</option>
+      </select>
+
+      <label for="M">M:</label>
+      <select name="M" required>
+        <option value="m0">M0</option>
+        <option value="m1">M1</option>
+      </select>
+
+      <label for="Stage">Stage:</label>
+      <select name="Stage" required>
+        <option value="stage i">Stage I</option>
+        <option value="stage ii">Stage II</option>
+        <option value="stage iii">Stage III</option>
+        <option value="stage iv">Stage IV</option>
+      </select>
+
+      <label for="Response">Response:</label>
+      <select name="Response" required>
+        <option value="excellent">Excellent</option>
+        <option value="indeterminate">Indeterminate</option>
+        <option value="biochemical incomplete">Biochemical Incomplete</option>
+        <option value="structural incomplete">Structural Incomplete</option>
+      </select>
+
+      <button type="submit">Predict</button>
+    </form>
+  </div>
+</body>
+</html>
