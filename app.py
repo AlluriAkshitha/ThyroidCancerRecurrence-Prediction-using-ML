@@ -4,72 +4,98 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# Load the trained model
-model = joblib.load('thyroid_cancer_rf_model.pkl')  # Make sure this file is in your root project folder!
+# Load the trained model and the expected column order
+model = joblib.load('thyroid_recurrence_rf.pkl')
+model_columns = joblib.load('model_columns.pkl')  # List of columns used during model training
 
-# Define the order of features expected by the model
-feature_names = ['Age', 'Gender', 'Smoking', 'Hx Smoking', 'Hx Radiothreapy',
-                 'Thyroid Function', 'Physical Examination', 'Adenopathy',
-                 'Pathology', 'Focality', 'Risk', 'T', 'N', 'M', 'Stage', 'Response']
+# List of features expected from the form
+feature_names = [
+    'Age', 'Gender', 'Smoking', 'Hx Smoking', 'Hx Radiothreapy',
+    'Thyroid Function', 'Physical Examination', 'Adenopathy',
+    'Pathology', 'Focality', 'Risk', 'T', 'N', 'M', 'Stage', 'Response'
+]
 
 # Preprocess input data from form
 def preprocess_input(data):
     encoding_maps = {
-        'Gender': {'male': 1, 'female': 0},
-        'Smoking': {'yes': 1, 'no': 0},
-        'Hx Smoking': {'yes': 1, 'no': 0},
-        'Hx Radiothreapy': {'yes': 1, 'no': 0},
-        'Thyroid Function': {'normal': 0, 'hyper': 1, 'hypo': 2},
-        'Physical Examination': {'normal': 0, 'abnormal': 1},
-        'Adenopathy': {'yes': 1, 'no': 0},
-        'Pathology': {'benign': 0, 'malignant': 1},
-        'Focality': {'unifocal': 0, 'multifocal': 1},
-        'Risk': {'low': 0, 'intermediate': 1, 'high': 2},
-        'Response': {'excellent': 0, 'indeterminate': 1, 'biochemical incomplete': 2, 'structural incomplete': 3},
-        'T': {'t0': 0, 't1': 1, 't2': 2, 't3': 3, 't4': 4},
-        'N': {'n0': 0, 'n1': 1, 'n2': 2, 'n3': 3},
-        'M': {'m0': 0, 'm1': 1},
-        'Stage': {'stage i': 0, 'stage ii': 1, 'stage iii': 2, 'stage iv': 3,
-                  'i': 0, 'ii': 1, 'iii': 2, 'iv': 3}
+        'Risk': {'Low': 0, 'Intermediate': 1, 'High': 2},
+        'Response': {'Excellent': 0, 'Indeterminate': 1, 'Biochemical Incomplete': 2, 'Structural Incomplete': 3},
+        'T': {'T1a': 0, 'T1b': 1, 'T2': 2, 'T3a': 3, 'T3b': 4, 'T4a': 5, 'T4b': 6},
+        'N': {'N0': 0, 'N1a': 1, 'N1b': 2},
+        'M': {'M0': 0, 'M1': 1},
+        'Stage': {'I': 0, 'II': 1, 'III': 2, 'IVA': 3, 'IVB': 4},
+        'Pathology': {'Papillary': 0, 'Micropapillary': 1, 'Follicular': 2, 'Hurthel cell': 3},
+        'Focality': {'Uni-Focal': 0, 'Multi-Focal': 1},
+        'Adenopathy': {'No': 0, 'Right': 1, 'Left': 2, 'Bilateral': 3, 'Extensive': 4, 'Posterior': 5},
+        'Smoking': {'No': 0, 'Yes': 1},
+        'Hx Smoking': {'No': 0, 'Yes': 1},
+        'Hx Radiothreapy': {'No': 0, 'Yes': 1},
+        'Thyroid Function': {
+            'Euthyroid': 0,
+            'Clinical Hyperthyroidism': 1,
+            'Clinical Hypothyroidism': 2,
+            'Subclinical Hyperthyroidism': 3,
+            'Subclinical Hypothyroidism': 4
+        },
+        'Physical Examination': {
+            'Multinodular goiter': 0,
+            'Single nodular goiter-right': 1,
+            'Single nodular goiter-left': 2,
+            'Normal': 3,
+            'Diffuse goiter': 4
+        },
+        'Gender': {'F': 0, 'M': 1}
     }
 
+    processed = {}
     for key in data:
         value = data[key]
-
-        if value is None:
-            data[key] = 0  # Default fallback for missing fields
+        if value is None or value == '':
+            processed[key] = 0  # Default fallback
             continue
-
         if key in encoding_maps:
-            value = value.lower().strip()
-            data[key] = encoding_maps[key].get(value, 0)  # Default to 0 if not found
+            processed[key] = encoding_maps[key].get(value, 0)  # No .lower().strip()!
         else:
             try:
-                data[key] = float(value)
+                processed[key] = float(value)
             except:
-                data[key] = 0  # Another fallback for invalid numeric input
-
-    return data
+                processed[key] = 0
+    return processed
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # 👈 Make sure you have templates/index.html
+    return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    # Collect form data
     form_data = {feat: request.form.get(feat) for feat in feature_names}
     processed_data = preprocess_input(form_data)
-    input_df = pd.DataFrame([processed_data], columns=feature_names)
+    input_df = pd.DataFrame([processed_data])
 
+    print("Form data:", form_data)
+    print("Processed data:", processed_data)
+    print("Input DataFrame:", input_df)
+
+    # Ensure input_df matches the model's expected columns
+    input_df = input_df.reindex(columns=model_columns, fill_value=0)
+
+    # Make prediction
     prediction = model.predict(input_df)[0]
 
-    result = (
-        "🟢 Everything looks good! No signs of cancer coming back."
-        if prediction == '0'
-        else "🔴 There may be a chance of cancer returning. Please consult a doctor for further advice."
-    )
+    # Make sure prediction is an integer (0 or 1)
+    try:
+        prediction = int(prediction)
+    except:
+        # If prediction is a string, map it
+        prediction = 1 if str(prediction).lower() in ['yes', '1'] else 0
 
-    return render_template('result.html', prediction=result)  # 👈 Make sure templates/result.html exists!
+    if prediction == 0:
+        result = " Everything looks good! No signs of cancer coming back."
+    else:
+        result = " There may be a chance of cancer returning. Please consult a doctor for further advice."
+
+    return render_template('result.html', prediction=result)
 
 if __name__ == '__main__':
     app.run(debug=True)

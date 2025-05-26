@@ -3,119 +3,135 @@
 <head>
   <meta charset="UTF-8">
   <title>Thyroid Cancer Recurrence Predictor</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <div class="container">
-    <img src="{{ url_for('static', filename='image.jpg') }}" alt="Thyroid Icon">
-    <h1>Thyroid Cancer Recurrence Prediction</h1>
-    <form method="POST" action="/predict">
-      
-      <label for="Age">Age:</label>
-      <input type="text" name="Age" required>
+  <div class="main-container">
+    <form class="card" action="/predict" method="post">
+      <!-- Logo/Image at the top -->
+      <div class="header-image">
+        <img src="{{ url_for('static', filename='image.jpg') }}" alt="Thyroid Icon" />
+      </div>
+      <h1>Thyroid Cancer Recurrence Predictor</h1>
+      <label>Age:</label>
+      <input type="number" name="Age" min="0" max="120" required>
 
-      <label for="Gender">Gender:</label>
+      <label>Gender:</label>
       <select name="Gender" required>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
+        <option value="F">F</option>
+        <option value="M">M</option>
       </select>
 
-      <label for="Smoking">Smoking:</label>
+      <label>Smoking:</label>
       <select name="Smoking" required>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
       </select>
 
-      <label for="Hx Smoking">Hx Smoking:</label>
+      <label>Hx Smoking:</label>
       <select name="Hx Smoking" required>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
       </select>
 
-      <label for="Hx Radiothreapy">Hx Radiothreapy:</label>
+      <label>Hx Radiothreapy:</label>
       <select name="Hx Radiothreapy" required>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
       </select>
 
-      <label for="Thyroid Function">Thyroid Function:</label>
+      <label>Thyroid Function:</label>
       <select name="Thyroid Function" required>
-        <option value="normal">Normal</option>
-        <option value="hyper">Hyper</option>
-        <option value="hypo">Hypo</option>
+        <option value="Euthyroid">Euthyroid</option>
+        <option value="Clinical Hyperthyroidism">Clinical Hyperthyroidism</option>
+        <option value="Clinical Hypothyroidism">Clinical Hypothyroidism</option>
+        <option value="Subclinical Hyperthyroidism">Subclinical Hyperthyroidism</option>
+        <option value="Subclinical Hypothyroidism">Subclinical Hypothyroidism</option>
       </select>
 
-      <label for="Physical Examination">Physical Examination:</label>
+      <label>Physical Examination:</label>
       <select name="Physical Examination" required>
-        <option value="normal">Normal</option>
-        <option value="abnormal">Abnormal</option>
+        <option value="Multinodular goiter">Multinodular goiter</option>
+        <option value="Single nodular goiter-right">Single nodular goiter-right</option>
+        <option value="Single nodular goiter-left">Single nodular goiter-left</option>
+        <option value="Normal">Normal</option>
+        <option value="Diffuse goiter">Diffuse goiter</option>
       </select>
 
-      <label for="Adenopathy">Adenopathy:</label>
+      <label>Adenopathy:</label>
       <select name="Adenopathy" required>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
+        <option value="No">No</option>
+        <option value="Right">Right</option>
+        <option value="Left">Left</option>
+        <option value="Bilateral">Bilateral</option>
+        <option value="Extensive">Extensive</option>
+        <option value="Posterior">Posterior</option>
       </select>
 
-      <label for="Pathology">Pathology:</label>
+      <label>Pathology:</label>
       <select name="Pathology" required>
-        <option value="benign">Benign</option>
-        <option value="malignant">Malignant</option>
+        <option value="Papillary">Papillary</option>
+        <option value="Micropapillary">Micropapillary</option>
+        <option value="Follicular">Follicular</option>
+        <option value="Hurthel cell">Hurthel cell</option>
       </select>
 
-      <label for="Focality">Focality:</label>
+      <label>Focality:</label>
       <select name="Focality" required>
-        <option value="unifocal">Unifocal</option>
-        <option value="multifocal">Multifocal</option>
+        <option value="Uni-Focal">Uni-Focal</option>
+        <option value="Multi-Focal">Multi-Focal</option>
       </select>
 
-      <label for="Risk">Risk:</label>
+      <label>Risk:</label>
       <select name="Risk" required>
-        <option value="low">Low</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="high">High</option>
+        <option value="Low">Low</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="High">High</option>
       </select>
 
-      <label for="T">T:</label>
+      <label>T:</label>
       <select name="T" required>
-        <option value="t0">T0</option>
-        <option value="t1">T1</option>
-        <option value="t2">T2</option>
-        <option value="t3">T3</option>
-        <option value="t4">T4</option>
+        <option value="T1a">T1a</option>
+        <option value="T1b">T1b</option>
+        <option value="T2">T2</option>
+        <option value="T3a">T3a</option>
+        <option value="T3b">T3b</option>
+        <option value="T4a">T4a</option>
+        <option value="T4b">T4b</option>
       </select>
 
-      <label for="N">N:</label>
+      <label>N:</label>
       <select name="N" required>
-        <option value="n0">N0</option>
-        <option value="n1">N1</option>
-        <option value="n2">N2</option>
-        <option value="n3">N3</option>
+        <option value="N0">N0</option>
+        <option value="N1a">N1a</option>
+        <option value="N1b">N1b</option>
       </select>
 
-      <label for="M">M:</label>
+      <label>M:</label>
       <select name="M" required>
-        <option value="m0">M0</option>
-        <option value="m1">M1</option>
+        <option value="M0">M0</option>
+        <option value="M1">M1</option>
       </select>
 
-      <label for="Stage">Stage:</label>
+      <label>Stage:</label>
       <select name="Stage" required>
-        <option value="stage i">Stage I</option>
-        <option value="stage ii">Stage II</option>
-        <option value="stage iii">Stage III</option>
-        <option value="stage iv">Stage IV</option>
+        <option value="I">I</option>
+        <option value="II">II</option>
+        <option value="III">III</option>
+        <option value="IVA">IVA</option>
+        <option value="IVB">IVB</option>
       </select>
 
-      <label for="Response">Response:</label>
+      <label>Response:</label>
       <select name="Response" required>
-        <option value="excellent">Excellent</option>
-        <option value="indeterminate">Indeterminate</option>
-        <option value="biochemical incomplete">Biochemical Incomplete</option>
-        <option value="structural incomplete">Structural Incomplete</option>
+        <option value="Excellent">Excellent</option>
+        <option value="Indeterminate">Indeterminate</option>
+        <option value="Biochemical Incomplete">Biochemical Incomplete</option>
+        <option value="Structural Incomplete">Structural Incomplete</option>
       </select>
 
-      <button type="submit">Predict</button>
+      <input type="submit" value="Predict Recurrence">
     </form>
   </div>
 </body>

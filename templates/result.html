@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Prediction Result</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-  <div class="container">
-    <img src="{{ url_for('static', filename='image.jpg') }}" alt="Thyroid Icon">
-    <h1>Prediction Result</h1>
-    <div class="result-box">
-      <p>{{ prediction }}</p>
-      <a href="/" class="back-button">Try Again</a>
+<div class="main-container">
+    <div class="form-side">
+        <div class="card">
+            <h1>Prediction Result</h1>
+            <p class="result">{{ prediction }}</p>
+            <a href="/" class="btn">Try Again</a>
+        </div>
     </div>
-  </div>
+</div>
 </body>
 </html>
